@@ -157,8 +157,16 @@ function renderRadio(q, moods, keepPage) {
 }
 
 // 默认顺序：有榜单排名的按位次靠前，没排名的一律按歌手名排（原来随机洗牌，看着乱）
-var REGION_ORDER = ['中国大陆','中国台湾','中国香港','日本','韩国','美国','英国','加拿大','澳大利亚',
-  '新加坡','马来西亚','泰国','印尼','菲律宾','法国','德国','意大利','西班牙','荷兰','瑞典','巴西','墨西哥','印度'];
+// 排序分块用大区：大陆/台湾/香港/新马统称华语
+var BLOCK = {
+  '中国大陆':'华语','中国台湾':'华语','中国香港':'华语','新加坡':'华语','马来西亚':'华语',
+  '日本':'日韩','韩国':'日韩',
+  '美国':'欧美','英国':'欧美','加拿大':'欧美','澳大利亚':'欧美','法国':'欧美','德国':'欧美',
+  '意大利':'欧美','西班牙':'欧美','荷兰':'欧美','瑞典':'欧美',
+  '巴西':'拉美','墨西哥':'拉美',
+  '泰国':'东南亚','印尼':'东南亚','菲律宾':'东南亚','印度':'其他'
+};
+var REGION_ORDER = ['华语','日韩','欧美','拉美','东南亚','其他'];
 function chartOf(s) {
   var m = /(.+?) Apple Music 榜第 (\d+) 位/.exec(String(s.desc || '').replace(/^\d{4} 年/, ''));
   return m ? { region: m[1], rank: +m[2] } : null;
@@ -170,13 +178,11 @@ function sortedAll(pool) {
     if (ca && !cb) return -1;
     if (!ca && cb) return 1;
     if (ca && cb) {
-      if (ca.region !== cb.region) {
-        var oa = REGION_ORDER.indexOf(ca.region), ob = REGION_ORDER.indexOf(cb.region);
-        if (oa < 0) oa = 99; if (ob < 0) ob = 99;
-        if (oa !== ob) return oa - ob;
-        return ca.region.localeCompare(cb.region, 'zh');
-      }
-      if (ca.rank !== cb.rank) return ca.rank - cb.rank;
+      var oa = REGION_ORDER.indexOf(BLOCK[ca.region] || '其他'), ob = REGION_ORDER.indexOf(BLOCK[cb.region] || '其他');
+      if (oa < 0) oa = 99; if (ob < 0) ob = 99;
+      if (oa !== ob) return oa - ob;                 // 先大区：华语 → 日韩 → 欧美 → 拉美 → 东南亚
+      if (ca.rank !== cb.rank) return ca.rank - cb.rank;  // 同一大区内按名次，台湾香港新马和大陆混排
+      return ca.region.localeCompare(cb.region, 'zh');
     }
     return (a.artist || '').localeCompare(b.artist || '', 'zh') || (a.title || '').localeCompare(b.title || '', 'zh');
   }).map(function (s) { return { song: s, pct: 0, matchedTags: [] }; });

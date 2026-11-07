@@ -556,3 +556,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;op
   .brand{display:block}
   .tabs{margin-top:10px;flex-wrap:wrap;gap:16px}
 }
+
+/* 小编推荐：徽标 + 开关胶囊 */
+.pickb{font-size:10px;letter-spacing:.12em;color:var(--a);border:1px solid var(--a);
+  padding:1px 5px;margin-right:9px;border-radius:1px;vertical-align:2px;white-space:nowrap}
+.pickchip.on{background:var(--fg);border-color:var(--fg);color:var(--bg)}

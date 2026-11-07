@@ -30,22 +30,25 @@ var REGIONS = [
   { k: 'sea',   n: '东南亚', tags: ['新加坡', '马来西亚', '泰国', '印尼', '菲律宾'] }
 ];
 var radioRegions = ['all'];        // 多选；含 'all' 等于不限
+var onlyPick = false;              // 只看小编推荐（来自用户自己歌单的那批）
 var POOLC = {}, IDXC = {};
 
 function regionOf(k) {
   return REGIONS.filter(function (r) { return r.k === k; })[0] || REGIONS[0];
 }
 function regionKey() {
-  if (!radioRegions.length || radioRegions.indexOf('all') !== -1) return 'all';
-  return radioRegions.slice().sort().join('+');
+  var rk = (!radioRegions.length || radioRegions.indexOf('all') !== -1) ? 'all' : radioRegions.slice().sort().join('+');
+  return rk + (onlyPick ? '|pick' : '');
 }
 function poolOf(key) {
   if (!POOLC[key]) {
-    if (key === 'all') {
+    var parts = key.split('|');
+    var rk = parts[0], wantPick = parts[1] === 'pick';
+    if (rk === 'all') {
       POOLC[key] = SONGS;
     } else {
       var tags = [];
-      key.split('+').forEach(function (k) {
+      rk.split('+').forEach(function (k) {
         (regionOf(k).tags || []).forEach(function (t) { if (tags.indexOf(t) === -1) tags.push(t); });
       });
       POOLC[key] = SONGS.filter(function (s) {
@@ -53,6 +56,7 @@ function poolOf(key) {
         return tags.some(function (t) { return own.indexOf(t) !== -1; });
       });
     }
+    if (wantPick) POOLC[key] = POOLC[key].filter(function (s) { return s.pick; });
   }
   return POOLC[key];
 }
@@ -75,14 +79,18 @@ var radioItems = [], radioPage = 0;
 
 function songHtml(r, idx) {
   var s = r.song;
+  // 出处不显示：只保留人工写的那句人话描述，自动导入的“榜第 N / 收录自 / 问卷推荐”一律不出现
+  var isSource = /榜第|收录自|同学问卷|录音室专辑收录|来自问卷/.test(s.desc || '');
+  var line = isSource ? '' : '<div class="d">' + s.desc + '</div>';
   var tags = s.tags.split(',').slice(0, 5).map(function (t) {
     return '<span class="tag' + (r.matchedTags.indexOf(t) !== -1 ? ' hit' : '') + '">' + t + '</span>';
   }).join('');
   var netease = 'https://music.163.com/#/search/m/?s=' + encodeURIComponent(s.title + ' ' + s.artist);
   var apple = 'https://music.apple.com/cn/search?term=' + encodeURIComponent(s.title + ' ' + s.artist);
   return '<div class="song"><div class="n">' + (idx + 1) + '</div>' +
-    '<div class="main"><div class="r1"><span class="t">' + s.title + '</span><span class="a">' + s.artist + '</span></div>' +
-    '<div class="d">' + s.desc + '</div><div class="tags">' + tags + '</div></div>' +
+    '<div class="main"><div class="r1">' + (s.pick ? '<span class="pickb">小编推荐</span>' : '') +
+    '<span class="t">' + s.title + '</span><span class="a">' + s.artist + '</span></div>' +
+    line + '<div class="tags">' + tags + '</div></div>' +
     '<div class="links">' +
     '<a href="' + netease + '" target="_blank" rel="noopener">网易云</a>' +
     '<a href="' + apple + '" target="_blank" rel="noopener">Apple</a></div></div>';
@@ -186,6 +194,15 @@ function renderRegionChips() {
       : radioRegions.indexOf(r.k) !== -1;
     return '<button class="chip' + (on ? ' on' : '') + '" data-region="' + r.k + '">' + r.n + '</button>';
   }).join('');
+  var pickBox = document.getElementById('radio-picks');
+  if (pickBox) {
+    pickBox.innerHTML = '<button class="chip pickchip' + (onlyPick ? ' on' : '') + '">小编推荐</button>';
+    pickBox.querySelector('.pickchip').onclick = function () {
+      onlyPick = !onlyPick;
+      renderRegionChips();
+      renderRadio(document.getElementById('rq').value.trim(), radioMoods);
+    };
+  }
   box.querySelectorAll('.chip').forEach(function (b) {
     b.onclick = function () {
       var k = b.dataset.region;

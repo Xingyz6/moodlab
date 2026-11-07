@@ -1,0 +1,5 @@
+*.md
+_card-preview.html
+打开网站.command
+.DS_Store
+deploy.sh

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>心情实验室 · MoodLab</title>
+<link rel="stylesheet" href="css/style.css?v=202611071121">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#home" id="homeLink"><h1>心情实验室</h1></a>
+  <nav class="tabs" id="tabs">
+    <button data-tab="home">首页</button>
+    <button data-tab="card">情绪卡片</button>
+    <button data-tab="radio">情绪电台</button>
+    <button data-tab="science">随心科普</button>
+  </nav>
+</header>
+
+<main>
+  <!-- ============ 首页 ============ -->
+  <section class="panel show" id="panel-home">
+    <div class="home">
+      <div class="home-copy">
+        <h2 class="home-h1">把此刻的心情<br>写成<em>一句话</em></h2>
+        <p class="home-lead">写下来，配一张照片，排成一张能存下来的卡片</p>
+        <div class="home-actions">
+          <button class="home-cta" id="homeGo" data-go="card">写一张卡片 <span>ENTER</span></button>
+          <div class="home-switch">
+            <button class="sw" id="swPrev" aria-label="上一个工具">‹</button>
+            <span class="sw-label" id="swLabel">情绪卡片</span>
+            <button class="sw" id="swNext" aria-label="下一个工具">›</button>
+          </div>
+        </div>
+      </div>
+      <div class="home-plate" id="heroPlate" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- ============ 工具一：情绪卡片 ============ -->
+  <section class="panel" id="panel-card">
+    <div class="split">
+      <div class="controls">
+        <div class="field">
+          <div class="labelrow">
+            <label>现在的心情</label>
+            <label class="switch">
+              <input type="checkbox" id="moodOnCard" checked>
+              <i></i>
+              <span>海报上显示心情</span>
+            </label>
+          </div>
+          <div id="moodWrap">
+            <div class="moods" id="card-moods"></div>
+            <button class="chip addmood" id="cmToggle">＋ 自定义心情</button>
+            <div class="custom-mood" id="customMood" hidden>
+              <input id="cmEmoji" maxlength="2" placeholder="🙂" aria-label="表情">
+              <input id="cmName" maxlength="6" placeholder="心情名，如 空" aria-label="心情名">
+              <input type="color" id="cmColor" value="#7c6cf0" aria-label="自定义心情色">
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>想说的话 <span class="hint" id="count">0 / 200</span></label>
+          <textarea id="text" maxlength="200" placeholder="今天…（写一句就好，留白也算内容）"></textarea>
+          <div class="inline-row">
+            <span>文件名</span>
+            <input class="textin tagin" id="fileTag" maxlength="16" placeholder="用户可自定义（可留空）">
+          </div>
+          <div class="inline-row">
+            <span>文字颜色</span>
+            <input type="color" id="textColor" title="文字颜色">
+            <button class="mini" id="textColorReset">随版式</button>
+          </div>
+          <div class="inline-row">
+            <span>正文描边</span>
+            <button class="chip sm" data-stroke="">无</button>
+            <button class="chip sm" data-stroke="#000000">黑边</button>
+            <button class="chip sm" data-stroke="#ffffff">白边</button>
+          </div>
+          <div class="inline-row">
+            <span>心情名描边</span>
+            <button class="chip sm" data-mstroke="">无</button>
+            <button class="chip sm" data-mstroke="#000000">黑边</button>
+            <button class="chip sm" data-mstroke="#ffffff">白边</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>配一张图（可选）</label>
+          <div class="upload" id="drop">
+            <input type="file" id="file" accept="image/*" multiple hidden>
+            <span id="dropHint">点击选图 · 可多选 · 自动裁切排版</span>
+            <button class="mini" id="clearImg">清空</button>
+          </div>
+          <div class="thumbs" id="thumbs"></div>
+          <div class="rotbar" id="rotbar" hidden>
+            <div class="rline"><span class="rlab" id="rotLabel">第 1 张</span></div>
+            <div class="rline">
+              <span>旋转</span>
+              <input type="range" id="rot" min="-180" max="180" step="1" value="0">
+              <input class="num" type="number" id="rotNum" min="-180" max="180" step="1" value="0" aria-label="旋转角度">
+              <button class="mini" id="rotReset">归零</button>
+            </div>
+            <div class="rline">
+              <span>位置 X</span>
+              <input type="range" id="posx" min="-40" max="40" step="1" value="0">
+              <input class="num" type="number" id="posxNum" min="-40" max="40" step="1" value="0" aria-label="位置X">
+              <button class="mini" id="posReset">回中</button>
+            </div>
+            <div class="rline">
+              <span>位置 Y</span>
+              <input type="range" id="posy" min="-40" max="40" step="1" value="0">
+              <input class="num" type="number" id="posyNum" min="-40" max="40" step="1" value="0" aria-label="位置Y">
+            </div>
+            <div class="rline">
+              <span>显示</span>
+              <div class="chips">
+                <button class="chip" data-fit="contain">完整</button>
+                <button class="chip" data-fit="cover">填满</button>
+              </div>
+            </div>
+            <div class="rline">
+              <span>缩放</span>
+              <input type="range" id="zoom" min="60" max="250" step="1" value="100">
+              <input class="num" type="number" id="zoomNum" min="60" max="250" step="1" value="100" aria-label="缩放百分比">
+              <button class="mini" id="zoomReset">复位</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>版式</label>
+          <div class="chips" id="templates"></div>
+        </div>
+
+        <details class="tune">
+          <summary>自定义</summary>
+
+          <div class="trow">
+            <label>尺寸</label>
+            <div class="chips" id="sizes"></div>
+          </div>
+
+          <div class="trow">
+            <label>主色 <span class="hint">不选就用心情色</span></label>
+            <div class="inline">
+              <input type="color" id="color">
+              <button class="mini" id="colorReset">随心情</button>
+            </div>
+          </div>
+
+          <div class="trow">
+            <label>水印 <span class="hint">清空即不显示</span></label>
+            <input class="textin" id="sign" maxlength="18" placeholder="心情实验室">
+          </div>
+
+          <div class="trow">
+            <label>图片区高度</label>
+            <div class="inline">
+              <input type="range" id="ratio" min="25" max="75" step="1">
+              <input class="num" type="number" id="ratioNum" min="25" max="75" step="1" aria-label="图片区高度百分比">
+            </div>
+          </div>
+
+          <div class="trow">
+            <label>文字大小</label>
+            <div class="inline">
+              <input type="range" id="scale" min="60" max="160" step="5">
+              <input class="num" type="number" id="scaleNum" min="60" max="160" step="5" aria-label="文字大小百分比">
+            </div>
+          </div>
+
+          <div class="trow">
+            <label>图片留边 <span class="hint">杂志版 · 0% 为满铺</span></label>
+            <div class="inline">
+              <input type="range" id="edge" min="0" max="20" step="1" value="6">
+              <input class="num" type="number" id="edgeNum" min="0" max="20" step="1" value="6" aria-label="图片留边百分比">
+            </div>
+          </div>
+
+          <div class="trow">
+            <label>竖排名字 <span class="hint">杂志版</span></label>
+            <div class="inline">
+              <span class="mini-lab">左右</span>
+              <input type="range" id="vname" min="50" max="90" step="1" value="88">
+              <input class="num" type="number" id="vnameNum" min="50" max="90" step="1" value="88" aria-label="竖排名字左右">
+            </div>
+            <div class="inline">
+              <span class="mini-lab">上下</span>
+              <input type="range" id="vnameY" min="20" max="80" step="1" value="50">
+              <input class="num" type="number" id="vnameYNum" min="20" max="80" step="1" value="50" aria-label="竖排名字上下">
+            </div>
+            <div class="inline">
+              <span class="mini-lab">大小</span>
+              <input type="range" id="vnameS" min="60" max="160" step="5" value="100">
+              <input class="num" type="number" id="vnameSNum" min="60" max="160" step="5" value="100" aria-label="竖排名字大小">
+            </div>
+          </div>
+
+          <div class="trow">
+            <label>文字对齐</label>
+            <div class="chips">
+              <button class="chip" data-align="left">左</button>
+              <button class="chip" data-align="center">居中</button>
+              <button class="chip" data-align="right">右</button>
+            </div>
+          </div>
+
+          <div class="trow">
+            <label>两张图的排法</label>
+            <div class="chips">
+              <button class="chip" data-dir="v">上下</button>
+              <button class="chip" data-dir="h">左右</button>
+            </div>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button class="primary" id="make">生成卡片</button>
+          <button class="ghost" id="shuffle">换一版</button>
+          <button class="ghost" id="save">下载 PNG</button>
+        </div>
+        <p class="tip" id="cardTip"></p>
+      </div>
+
+      <div class="preview">
+        <div class="stage" id="stage"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 工具二：情绪电台 ============ -->
+  <section class="panel" id="panel-radio">
+    <div class="radio-head">
+      <div class="moods" id="radio-moods"></div>
+      <div class="chips" id="radio-regions"></div>
+      <div class="searchrow">
+        <input id="rq" placeholder="也可以自己说：下雨天想听点不吵的">
+        <button class="primary" id="rgo">找歌</button>
+      </div>
+    </div>
+    <div class="meta-line" id="rmeta"></div>
+    <div id="rlist"></div>
+    <div class="pager" id="rpager" hidden>
+      <button class="mini" id="rprev">上一页</button>
+      <button class="mini" id="rnext">下一页</button>
+    </div>
+
+    <div class="report" id="report">
+      <div class="report-head">
+        <h3>本周心情报告</h3>
+        <button class="mini" id="rclear">清空记录</button>
+      </div>
+      <div id="reportBody"></div>
+    </div>
+  </section>
+
+  <!-- ============ 工具三：随心科普 ============ -->
+  <section class="panel" id="panel-science">
+    <div class="daily" id="daily"></div>
+    <div class="science-bar">
+      <input id="sciq" class="textin" placeholder="搜关键词：杏仁核、Transformer、二分查找、蒙太奇、科举…" autocomplete="off">
+      <span class="hint" id="smeta"></span>
+    </div>
+    <div class="chips" id="scats"></div>
+    <div class="cards" id="slist"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  MoodLab · 纯前端，数据只在你自己的浏览器里
+</footer>
+
+<script src="js/bm25.js?v=202611071121"></script>
+<script src="js/music.js?v=202611071121"></script>
+<script src="js/moods.js?v=202611071121"></script>
+<script src="js/card.js?v=202611071121"></script>
+<script src="js/radio.js?v=202611071121"></script>
+<script src="js/science.js?v=202611071121"></script>
+<script src="js/plate.js?v=202611071121"></script>
+<script src="js/main.js?v=202611071121"></script>
+
+</body>
+</html>

@@ -52,7 +52,10 @@ var Plate = (function () {
       '<defs><clipPath id="' + clipId + '"><circle cx="' + cx + '" cy="' + cy + '" r="' + (maxR * 0.96) + '"/></clipPath></defs>' +
       dots +
       '<circle cx="' + cx + '" cy="' + cy + '" r="' + (maxR * 0.3) + '" fill="none" stroke="' + INK + '" stroke-width="1" opacity=".22"/>' +
-      '<g clip-path="url(#' + clipId + ')" opacity=".82">' + wave(R, W, H, cy, H * 0.13, INK, 0.9) + '</g>' +
+      '<g clip-path="url(#' + clipId + ')" opacity=".55">' +
+        '<line x1="' + (cx - maxR) + '" y1="' + cy + '" x2="' + (cx + maxR) + '" y2="' + cy + '" stroke="' + INK + '" stroke-width="0.8"/>' +
+        '<line x1="' + cx + '" y1="' + (cy - maxR) + '" x2="' + cx + '" y2="' + (cy + maxR) + '" stroke="' + INK + '" stroke-width="0.8" opacity=".5"/>' +
+      '</g>' +
       '</svg>';
   }
 

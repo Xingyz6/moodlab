@@ -41,11 +41,11 @@ document.getElementById('homeLink').onclick = function (e) { e.preventDefault();
 (function () {
   var TOOLS = [
     { k: 'card', label: '情绪卡片', verb: '写一张卡片',
-      lead: '写下来，配一张照片，排成一张能存下来的卡片' },
+      lead: '整理一下生活' },
     { k: 'radio', label: '情绪电台', verb: '听几首歌',
-      lead: '说一句现在的心情，挑几首对得上的歌' },
+      lead: '探索一些音乐' },
     { k: 'science', label: '随心科普', verb: '看一条冷知识',
-      lead: '每天一条冷知识，从杏仁核到机器学习' }
+      lead: '满足一下好奇' }
   ];
   var i = 0;
   var go = document.getElementById('homeGo');

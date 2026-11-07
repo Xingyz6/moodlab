@@ -159,12 +159,14 @@ function renderRadio(q, moods, keepPage) {
 // 默认顺序：有榜单排名的按位次靠前，没排名的一律按歌手名排（原来随机洗牌，看着乱）
 // 排序分块用大区：大陆/台湾/香港/新马统称华语
 // 排序：① 自己歌单里的披头士/Queen/罗大佑置顶 ② 跨榜热度（出现在几个地区榜）③ 最好名次 ④ 歌手名
-var PRIOR = ['The Beatles', 'Queen', '罗大佑'];
+var PRIOR = ['The Beatles', 'Queen', '罗大佑', 'Michael Jackson'];
 function sortedAll(pool) {
   return pool.slice().sort(function (a, b) {
-    var pa = (a.pick && PRIOR.indexOf(a.artist) !== -1) ? 0 : 1;
-    var pb = (b.pick && PRIOR.indexOf(b.artist) !== -1) ? 0 : 1;
+    var ia = PRIOR.indexOf(a.artist), ib = PRIOR.indexOf(b.artist);
+    var pa = (a.pick && ia !== -1) ? 0 : 1;
+    var pb = (b.pick && ib !== -1) ? 0 : 1;
     if (pa !== pb) return pa - pb;
+    if (pa === 0 && ia !== ib) return ia - ib;   // 置顶内部按 披头士→Queen→罗大佑→MJ 分组
     var ha = a.hot || 0, hb = b.hot || 0;
     if (ha !== hb) return hb - ha;
     var ba = a.best || 999, bb = b.best || 999;

@@ -80,8 +80,9 @@ var radioItems = [], radioPage = 0;
 function songHtml(r, idx) {
   var s = r.song;
   // 出处不显示：只保留人工写的那句人话描述，自动导入的“榜第 N / 收录自 / 问卷推荐”一律不出现
-  var isSource = /榜第|收录自|同学问卷|录音室专辑收录|来自问卷/.test(s.desc || '');
-  var line = isSource ? '' : '<div class="d">' + s.desc + '</div>';
+  var isSource = /收录自|同学问卷|录音室专辑收录|来自问卷/.test(s.desc || ''); // 榜单位次保留，其余来源不写
+  var desc = String(s.desc || '').replace(/^\d{4} 年/, '').replace(/。$/, '');
+  var line = isSource ? '' : '<div class="d">' + desc + '</div>';
   var tags = s.tags.split(',').slice(0, 5).map(function (t) {
     return '<span class="tag' + (r.matchedTags.indexOf(t) !== -1 ? ' hit' : '') + '">' + t + '</span>';
   }).join('');
@@ -194,15 +195,12 @@ function renderRegionChips() {
       : radioRegions.indexOf(r.k) !== -1;
     return '<button class="chip' + (on ? ' on' : '') + '" data-region="' + r.k + '">' + r.n + '</button>';
   }).join('');
-  var pickBox = document.getElementById('radio-picks');
-  if (pickBox) {
-    pickBox.innerHTML = '<button class="chip pickchip' + (onlyPick ? ' on' : '') + '">小编推荐</button>';
-    pickBox.querySelector('.pickchip').onclick = function () {
-      onlyPick = !onlyPick;
-      renderRegionChips();
-      renderRadio(document.getElementById('rq').value.trim(), radioMoods);
-    };
-  }
+  box.insertAdjacentHTML('beforeend', '<button class="chip pickchip' + (onlyPick ? ' on' : '') + '">小编推荐</button>');
+  box.querySelector('.pickchip').onclick = function () {
+    onlyPick = !onlyPick;
+    renderRegionChips();
+    renderRadio(document.getElementById('rq').value.trim(), radioMoods);
+  };
   box.querySelectorAll('.chip').forEach(function (b) {
     b.onclick = function () {
       var k = b.dataset.region;

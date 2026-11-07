@@ -196,12 +196,8 @@ function renderRegionChips() {
     return '<button class="chip' + (on ? ' on' : '') + '" data-region="' + r.k + '">' + r.n + '</button>';
   }).join('');
   box.insertAdjacentHTML('beforeend', '<button class="chip pickchip' + (onlyPick ? ' on' : '') + '">小编推荐</button>');
-  box.querySelector('.pickchip').onclick = function () {
-    onlyPick = !onlyPick;
-    renderRegionChips();
-    renderRadio(document.getElementById('rq').value.trim(), radioMoods);
-  };
   box.querySelectorAll('.chip').forEach(function (b) {
+    if (b.classList.contains('pickchip')) return;   // 别让地域的逻辑接管这个胶囊
     b.onclick = function () {
       var k = b.dataset.region;
       if (k === 'all') {
@@ -216,6 +212,11 @@ function renderRegionChips() {
       renderRadio(document.getElementById('rq').value.trim(), radioMoods);
     };
   });
+  box.querySelector('.pickchip').onclick = function () {
+    onlyPick = !onlyPick;
+    renderRegionChips();
+    renderRadio(document.getElementById('rq').value.trim(), radioMoods);
+  };
 }
 
 function toggleMood(k) {

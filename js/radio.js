@@ -10,7 +10,7 @@ var MOOD_QUERY = {
   miss:  '思念 怀旧 温柔 民谣',
   up:    '热血 能量 节奏 派对'
 };
-var radioMoods = ['calm'];   // 多选；空数组 = 不限
+var radioMoods = [];   // 多选；空数组 = 不限（进板块默认不限）
 
 function logMood(k) {
   try {
@@ -146,7 +146,7 @@ function renderRadio(q, moods, keepPage) {
   if (q) {
     res = solid(BM25.search(idxOf(rk), q, pool.length));
   } else if (!ms.length) {
-    res = shuffleAll(pool);
+    res = sortedAll(pool);
   } else {
     var mq = ms.map(function (k) { return MOOD_QUERY[k]; }).join(' ');
     res = solid(BM25.search(idxOf(rk), mq, pool.length));
@@ -154,6 +154,32 @@ function renderRadio(q, moods, keepPage) {
   radioItems = res;
   if (!keepPage) radioPage = 0;
   paintRadio();
+}
+
+// 默认顺序：有榜单排名的按位次靠前，没排名的一律按歌手名排（原来随机洗牌，看着乱）
+var REGION_ORDER = ['中国大陆','中国台湾','中国香港','日本','韩国','美国','英国','加拿大','澳大利亚',
+  '新加坡','马来西亚','泰国','印尼','菲律宾','法国','德国','意大利','西班牙','荷兰','瑞典','巴西','墨西哥','印度'];
+function chartOf(s) {
+  var m = /(.+?) Apple Music 榜第 (\d+) 位/.exec(String(s.desc || '').replace(/^\d{4} 年/, ''));
+  return m ? { region: m[1], rank: +m[2] } : null;
+}
+// 默认顺序：地区成块、块内按榜单名次；没有榜单的（歌单、补齐的）排在最后按歌手名
+function sortedAll(pool) {
+  return pool.slice().sort(function (a, b) {
+    var ca = chartOf(a), cb = chartOf(b);
+    if (ca && !cb) return -1;
+    if (!ca && cb) return 1;
+    if (ca && cb) {
+      if (ca.region !== cb.region) {
+        var oa = REGION_ORDER.indexOf(ca.region), ob = REGION_ORDER.indexOf(cb.region);
+        if (oa < 0) oa = 99; if (ob < 0) ob = 99;
+        if (oa !== ob) return oa - ob;
+        return ca.region.localeCompare(cb.region, 'zh');
+      }
+      if (ca.rank !== cb.rank) return ca.rank - cb.rank;
+    }
+    return (a.artist || '').localeCompare(b.artist || '', 'zh') || (a.title || '').localeCompare(b.title || '', 'zh');
+  }).map(function (s) { return { song: s, pct: 0, matchedTags: [] }; });
 }
 
 function renderReport() {

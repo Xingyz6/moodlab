@@ -21,13 +21,14 @@ function logMood(k) {
 }
 
 // 地域筛选：按曲目 tags 里的地区/语种分组
+// 地域一律按歌手所属大区（大陆/港台/新马都算华语），不再看榜单出处
 var REGIONS = [
-  { k: 'all',   n: '不限',   tags: null },
-  { k: 'hua',   n: '华语',   tags: ['中国大陆', '中国香港', '中国台湾', '中文', '华语流行', '粤语流行', '华语经典'] },
-  { k: 'jpkr',  n: '日韩',   tags: ['日本', '韩国', '日文', '韩文', '日系', 'J-POP', 'K-POP', '日系摇滚', '日系流行', '日系偶像', '日语'] },
-  { k: 'west',  n: '欧美',   tags: ['美国', '英国', '法国', '德国', '意大利', '西班牙', '荷兰', '瑞典', '加拿大', '澳大利亚', '欧美流行', '英文', '英伦'] },
-  { k: 'latam', n: '拉美',   tags: ['巴西', '墨西哥', '拉美'] },
-  { k: 'sea',   n: '东南亚', tags: ['新加坡', '马来西亚', '泰国', '印尼', '菲律宾'] }
+  { k: 'all',   n: '不限',   reg: null },
+  { k: 'hua',   n: '华语',   reg: '华语' },
+  { k: 'jpkr',  n: '日韩',   reg: '日韩' },
+  { k: 'west',  n: '欧美',   reg: '欧美' },
+  { k: 'latam', n: '拉美',   reg: '拉美' },
+  { k: 'sea',   n: '东南亚', reg: '东南亚' }
 ];
 var radioRegions = ['all'];        // 多选；含 'all' 等于不限
 var onlyPick = false;              // 只看小编推荐（来自用户自己歌单的那批）
@@ -47,14 +48,8 @@ function poolOf(key) {
     if (rk === 'all') {
       POOLC[key] = SONGS;
     } else {
-      var tags = [];
-      rk.split('+').forEach(function (k) {
-        (regionOf(k).tags || []).forEach(function (t) { if (tags.indexOf(t) === -1) tags.push(t); });
-      });
-      POOLC[key] = SONGS.filter(function (s) {
-        var own = s.tags.split(',');
-        return tags.some(function (t) { return own.indexOf(t) !== -1; });
-      });
+      var regs = rk.split('+').map(function (k) { return regionOf(k).reg; }).filter(Boolean);
+      POOLC[key] = SONGS.filter(function (s) { return regs.indexOf(s.region) !== -1; });
     }
     if (wantPick) POOLC[key] = POOLC[key].filter(function (s) { return s.pick; });
   }
@@ -158,32 +153,17 @@ function renderRadio(q, moods, keepPage) {
 
 // 默认顺序：有榜单排名的按位次靠前，没排名的一律按歌手名排（原来随机洗牌，看着乱）
 // 排序分块用大区：大陆/台湾/香港/新马统称华语
-var BLOCK = {
-  '中国大陆':'华语','中国台湾':'华语','中国香港':'华语','新加坡':'华语','马来西亚':'华语',
-  '日本':'日韩','韩国':'日韩',
-  '美国':'欧美','英国':'欧美','加拿大':'欧美','澳大利亚':'欧美','法国':'欧美','德国':'欧美',
-  '意大利':'欧美','西班牙':'欧美','荷兰':'欧美','瑞典':'欧美',
-  '巴西':'拉美','墨西哥':'拉美',
-  '泰国':'东南亚','印尼':'东南亚','菲律宾':'东南亚','印度':'其他'
-};
-var REGION_ORDER = ['华语','日韩','欧美','拉美','东南亚','其他'];
-function chartOf(s) {
-  var m = /(.+?) Apple Music 榜第 (\d+) 位/.exec(String(s.desc || '').replace(/^\d{4} 年/, ''));
-  return m ? { region: m[1], rank: +m[2] } : null;
-}
-// 默认顺序：地区成块、块内按榜单名次；没有榜单的（歌单、补齐的）排在最后按歌手名
+// 排序：① 自己歌单里的披头士/Queen/罗大佑置顶 ② 跨榜热度（出现在几个地区榜）③ 最好名次 ④ 歌手名
+var PRIOR = ['The Beatles', 'Queen', '罗大佑'];
 function sortedAll(pool) {
   return pool.slice().sort(function (a, b) {
-    var ca = chartOf(a), cb = chartOf(b);
-    if (ca && !cb) return -1;
-    if (!ca && cb) return 1;
-    if (ca && cb) {
-      var oa = REGION_ORDER.indexOf(BLOCK[ca.region] || '其他'), ob = REGION_ORDER.indexOf(BLOCK[cb.region] || '其他');
-      if (oa < 0) oa = 99; if (ob < 0) ob = 99;
-      if (oa !== ob) return oa - ob;                 // 先大区：华语 → 日韩 → 欧美 → 拉美 → 东南亚
-      if (ca.rank !== cb.rank) return ca.rank - cb.rank;  // 同一大区内按名次，台湾香港新马和大陆混排
-      return ca.region.localeCompare(cb.region, 'zh');
-    }
+    var pa = (a.pick && PRIOR.indexOf(a.artist) !== -1) ? 0 : 1;
+    var pb = (b.pick && PRIOR.indexOf(b.artist) !== -1) ? 0 : 1;
+    if (pa !== pb) return pa - pb;
+    var ha = a.hot || 0, hb = b.hot || 0;
+    if (ha !== hb) return hb - ha;
+    var ba = a.best || 999, bb = b.best || 999;
+    if (ba !== bb) return ba - bb;
     return (a.artist || '').localeCompare(b.artist || '', 'zh') || (a.title || '').localeCompare(b.title || '', 'zh');
   }).map(function (s) { return { song: s, pct: 0, matchedTags: [] }; });
 }

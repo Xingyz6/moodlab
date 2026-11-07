@@ -118,6 +118,19 @@ function paintRadio() {
   pager.hidden = pages <= 1;
   document.getElementById('rprev').disabled = radioPage === 0;
   document.getElementById('rnext').disabled = radioPage >= pages - 1;
+  var inEl = document.getElementById('rpageIn');
+  if (inEl) { inEl.value = radioPage + 1; inEl.max = pages; }
+  var totEl = document.getElementById('rpageTot');
+  if (totEl) totEl.textContent = pages;
+}
+
+function gotoPage(n) {
+  var pages = Math.max(1, Math.ceil(radioItems.length / PAGE_SIZE));
+  n = parseInt(n, 10);
+  if (!n || n < 1) n = 1;
+  if (n > pages) n = pages;
+  radioPage = n - 1;
+  paintRadio();
 }
 
 function jumpPage(d) {
@@ -264,6 +277,11 @@ function initRadio() {
   });
   document.getElementById('rprev').onclick = function () { jumpPage(-1); };
   document.getElementById('rnext').onclick = function () { jumpPage(1); };
+  var jumpBtn = document.getElementById('rjump'), pageIn = document.getElementById('rpageIn');
+  if (jumpBtn) jumpBtn.onclick = function () { gotoPage(pageIn.value); };
+  if (pageIn) pageIn.onkeydown = function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); gotoPage(pageIn.value); pageIn.blur(); }
+  };
   document.getElementById('rclear').onclick = function () {
     localStorage.removeItem('ml-log');
     renderReport();

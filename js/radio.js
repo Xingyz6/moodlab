@@ -81,14 +81,19 @@ function songHtml(r, idx) {
   var tags = s.tags.split(',').slice(0, 5).map(function (t) {
     return '<span class="tag' + (r.matchedTags.indexOf(t) !== -1 ? ' hit' : '') + '">' + t + '</span>';
   }).join('');
-  var netease = 'https://music.163.com/#/search/m/?s=' + encodeURIComponent(s.title + ' ' + s.artist);
-  var apple = 'https://music.apple.com/cn/search?term=' + encodeURIComponent(s.title + ' ' + s.artist);
+  var q = s.title + ' ' + s.artist;
+  var netease = s.ne ? 'https://music.163.com/song?id=' + s.ne
+                     : 'https://music.163.com/#/search/m/?s=' + encodeURIComponent(q);
+  var apple = s.au ? s.au : 'https://music.apple.com/cn/search?term=' + encodeURIComponent(q);
+  var qq = s.qq ? 'https://y.qq.com/n/ryqq/songDetail/' + s.qq
+                : 'https://y.qq.com/n/ryqq/search?w=' + encodeURIComponent(q);
   return '<div class="song"><div class="n">' + (idx + 1) + '</div>' +
     '<div class="main"><div class="r1">' + (s.pick ? '<span class="pickb">小编推荐</span>' : '') +
     '<span class="t">' + s.title + '</span><span class="a">' + s.artist + '</span></div>' +
     line + '<div class="tags">' + tags + '</div></div>' +
     '<div class="links">' +
     '<a href="' + netease + '" target="_blank" rel="noopener">网易云</a>' +
+    '<a href="' + qq + '" target="_blank" rel="noopener">QQ</a>' +
     '<a href="' + apple + '" target="_blank" rel="noopener">Apple</a></div></div>';
 }
 

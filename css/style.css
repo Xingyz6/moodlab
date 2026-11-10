@@ -683,29 +683,47 @@ body::before{
 .day .bar{background:var(--fg)!important; border-radius:3px}
 
 /* 深浅色 */
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#000; --bg-soft:#0b0b0c; --card:#141416; --card2:#1a1a1c;
-    --fg:#f5f5f7; --dim:#a1a1a6; --dim2:#86868b;
-    --line:rgba(255,255,255,.14); --line-soft:rgba(255,255,255,.08);
-    --a:#f5f5f7; --b:#f5f5f7;
-    --glass-bg:rgba(28,28,30,.58);
-    --glass-brd:rgba(255,255,255,.14);
-    --glass-hi:inset 0 1px 0 rgba(255,255,255,.14), inset 0 -1px 0 rgba(0,0,0,.4);
-    --glass-shadow:0 1px 2px rgba(0,0,0,.5), 0 16px 40px rgba(0,0,0,.55);
-  }
-  body{background:#000}
-  body::before{
-    background-image:
-      radial-gradient(34% 38% at 16% 8%,  rgba(255,255,255,.18), transparent 68%),
-      radial-gradient(28% 32% at 88% 4%,  rgba(255,255,255,.12), transparent 68%),
-      radial-gradient(42% 42% at 76% 88%, rgba(255,255,255,.11), transparent 68%),
-      radial-gradient(24% 24% at 24% 78%, rgba(255,255,255,.08), transparent 68%);
-  }
-  .top{background:rgba(10,10,11,.72)}
-  .chip.on,.mood.on,.primary,.home-cta,.switch.on{background:#f5f5f7; color:#000}
-  .kcard,.report,.preview,.saveov__box,.daily{background:rgba(28,28,30,.66)}
+html.dark{
+  --bg:#000; --bg-soft:#0b0b0c; --card:#141416; --card2:#1a1a1c;
+  --fg:#f5f5f7; --dim:#a1a1a6; --dim2:#86868b;
+  --line:rgba(255,255,255,.14); --line-soft:rgba(255,255,255,.08);
+  --a:#f5f5f7; --b:#f5f5f7;
+  --glass-bg:rgba(28,28,30,.58);
+  --glass-brd:rgba(255,255,255,.14);
+  --glass-hi:inset 0 1px 0 rgba(255,255,255,.14), inset 0 -1px 0 rgba(0,0,0,.4);
+  --glass-shadow:0 1px 2px rgba(0,0,0,.5), 0 16px 40px rgba(0,0,0,.55);
+  color-scheme:dark;
 }
+html.dark body{background:#000}
+html.dark body::before{
+  background-image:
+    radial-gradient(34% 38% at 16% 8%,  rgba(255,255,255,.18), transparent 68%),
+    radial-gradient(28% 32% at 88% 4%,  rgba(255,255,255,.12), transparent 68%),
+    radial-gradient(42% 42% at 76% 88%, rgba(255,255,255,.11), transparent 68%),
+    radial-gradient(24% 24% at 24% 78%, rgba(255,255,255,.08), transparent 68%);
+}
+html.dark .top{background:rgba(10,10,11,.72)}
+html.dark .kcard,html.dark .report,html.dark .preview,html.dark .saveov__box,html.dark .daily{background:rgba(28,28,30,.66)}
+
+/* 深浅色开关（导航右侧） */
+.theme-toggle{
+  appearance:none; cursor:pointer; flex:none;
+  width:38px; height:38px; border-radius:50%;
+  display:grid; place-items:center;
+  background:var(--glass-bg); border:1px solid var(--glass-brd);
+  box-shadow:var(--glass-hi), var(--glass-shadow);
+  backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+  transition:transform .18s ease, background .25s ease;
+}
+.theme-toggle:hover{transform:translateY(-1px)}
+.theme-toggle .tk{
+  width:15px; height:15px; border-radius:50%;
+  border:1.5px solid var(--fg);
+  background:linear-gradient(90deg, var(--fg) 50%, transparent 50%);
+  transition:background .25s ease, transform .25s ease;
+}
+html.dark .theme-toggle .tk{transform:rotate(180deg)}
+
 
 /* 修：链接排成一行；情绪 emoji 去色；行距收紧 */
 .song .links{display:flex; flex-direction:row; align-items:center; gap:6px; flex-wrap:nowrap}

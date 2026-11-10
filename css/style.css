@@ -731,3 +731,18 @@ body::before{
 /* 列表分隔线：只在行与行之间，避免双线 */
 .song{border-top:0!important}
 .song + .song{border-top:1px solid var(--line-soft)}
+
+/* 手机：标题占满一行，三个平台链接单独一行，不再挤压标题 */
+@media (max-width:720px){
+  .song{flex-wrap:wrap; padding:14px 14px}
+  .song .main{flex:1 1 calc(100% - 26px)}
+  .song .links{flex-direction:row; width:100%; justify-content:flex-start; margin-top:10px; padding-left:26px; gap:8px}
+}
+
+/* 手机：序号与内容用网格对齐，链接固定第二列换行 */
+@media (max-width:720px){
+  .song{display:grid; grid-template-columns:18px 1fr; column-gap:10px; row-gap:2px; align-items:start}
+  .song .n{grid-column:1; grid-row:1; padding-top:3px}
+  .song .main{grid-column:2; grid-row:1}
+  .song .links{grid-column:2; grid-row:2; justify-content:flex-start; margin-top:10px; padding-left:0}
+}

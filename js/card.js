@@ -329,7 +329,7 @@ function tplFilm(m, txt, W, H) {
     }).join('') +
     ((cardState.showMood || cardState.sign)
       ? '<text x="' + W / 2 + '" y="' + (H - 90) + '" text-anchor="middle" font-size="20" fill="#2a231c" fill-opacity=".35" font-family="' + FONT + '">' +
-        (cardState.showMood ? p.e + ' ' + p.n : '') +
+        (cardState.showMood ? p.n : '') +
         (cardState.showMood && cardState.sign ? ' · ' : '') +
         (cardState.sign ? escXml(cardState.sign) : '') +
         '</text>'
@@ -339,9 +339,7 @@ function tplFilm(m, txt, W, H) {
 // 心情标签拆两段：emoji 是彩色字体，不能描边（描边会把它变成单色线框）
 function moodLabel(x, y, size, ink, p, extraAttrs) {
   var ea = extraAttrs || '';
-  var w = mw(p.e + '\u00a0', size, '400', FONT);
-  return '<text x="' + x + '" y="' + y + '" font-size="' + size + '" fill="' + ink + '"' + ea + ' font-family="' + FONT + '">' + p.e + '</text>' +
-    '<text x="' + (x + w) + '" y="' + y + '" font-size="' + size + '" fill="' + ink + '"' + strokeAttrs(size, 'mood') + ea + ' font-family="' + FONT + '">' + p.n + '</text>';
+  return '<text x="' + x + '" y="' + y + '" font-size="' + size + '" fill="' + ink + '"' + strokeAttrs(size, 'mood') + ea + ' font-family="' + FONT + '">' + p.n + '</text>';
 }
 
 // 文字描边：paint-order=stroke 让描边画在字下面，不啃字形

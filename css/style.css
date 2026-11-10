@@ -568,3 +568,166 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;op
   color:var(--fg);background:transparent;border:0;border-bottom:1px solid var(--line);outline:none}
 .pager .pnum input:focus{border-bottom-color:var(--fg)}
 .pager .pnum b{font-weight:600;color:var(--fg)}
+
+
+/* ==========================================================================
+   黑白玻璃（2026-11 改版）：纯灰阶 + 半透明玻璃控件，贴近 Apple 观感
+   ========================================================================== */
+:root{
+  --bg:#ffffff;
+  --bg-soft:#f5f5f7;
+  --card:#ffffff;
+  --card2:#f2f2f4;
+  --fg:#1d1d1f;
+  --dim:#6e6e73;
+  --dim2:#86868b;
+  --line:rgba(0,0,0,.10);
+  --line-soft:rgba(0,0,0,.06);
+  --a:#1d1d1f;            /* 强调色收敛为墨黑，不再用朱红 */
+  --b:#1d1d1f;
+  --r:22px;
+  --r-md:14px;
+
+  --glass-bg:rgba(255,255,255,.66);
+  --glass-brd:rgba(0,0,0,.07);
+  --glass-hi:inset 0 1px 0 rgba(255,255,255,1), inset 0 -1px 0 rgba(0,0,0,.04);
+  --glass-shadow:0 0 0 1px rgba(0,0,0,.05), 0 1px 2px rgba(0,0,0,.05), 0 12px 34px rgba(0,0,0,.06);
+  --glass-blur:blur(22px) saturate(180%);
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Helvetica Neue",sans-serif;
+  --mono:"SF Mono",ui-monospace,Menlo,monospace;
+}
+
+body{
+  background:linear-gradient(180deg,#ffffff 0%,#f7f7f8 46%,#efeff1 100%);
+  background-attachment:fixed;
+  color:var(--fg);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Helvetica Neue",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+/* 单色柔光斑：玻璃要在有明暗的后景上才看得出 */
+body::before{
+  content:''; position:fixed; inset:-15% -10%; z-index:0; pointer-events:none; opacity:1;
+  background-image:
+    radial-gradient(34% 38% at 16% 8%,  rgba(0,0,0,.14), transparent 68%),
+    radial-gradient(28% 32% at 88% 4%,  rgba(0,0,0,.11), transparent 68%),
+    radial-gradient(42% 42% at 76% 88%, rgba(0,0,0,.12), transparent 68%),
+    radial-gradient(24% 24% at 24% 78%, rgba(0,0,0,.08), transparent 68%);
+  filter:blur(8px);
+}
+.wrap,.top,.main,footer{position:relative; z-index:1}
+
+/* 头部：悬浮磨砂条 */
+.top{
+  background:rgba(255,255,255,.72); border-bottom:1px solid var(--line-soft);
+  backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+  position:sticky; top:0;
+}
+.brand h1{font-family:var(--display); font-size:16px; font-weight:600; letter-spacing:-.01em}
+.tabs button{font-family:var(--display); color:var(--dim)}
+.tabs button.on{color:var(--fg)}
+
+/* 大标题 */
+.home-h1{
+  font-family:var(--display); font-weight:640; letter-spacing:-.035em; line-height:1.06;
+  color:var(--fg);
+}
+.home-h1 em{font-style:normal; color:var(--fg); font-weight:640}
+.home-lead,.hero-p,.lead,.hint,.kicker,.eyebrow{font-family:var(--display); color:var(--dim)}
+
+/* 玻璃：胶囊 / 按钮 / 输入 / 翻页 */
+.chip,.mood,.mini,.ghost,.primary,.home-cta,.home-switch,.switch,.pager,.searchrow input,
+.textin,.upload,.tune .num,.saveov__box{
+  font-family:var(--display);
+  background:var(--glass-bg);
+  border:1px solid var(--glass-brd);
+  box-shadow:var(--glass-hi), var(--glass-shadow);
+  backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+  color:var(--fg);
+  transition:transform .16s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.chip,.mood,.mini,.ghost,.home-switch,.pager{border-radius:999px}
+.primary,.home-cta{border-radius:999px; font-weight:560}
+.chip:hover,.mood:hover,.mini:hover,.ghost:hover,.primary:hover,.home-cta:hover{transform:translateY(-1px)}
+.primary:active,.home-cta:active,.chip:active,.mini:active{transform:translateY(0) scale(.985)}
+.chip.on,.mood.on,.primary,.home-cta,.switch.on{
+  background:var(--fg); color:#fff; border-color:transparent; box-shadow:0 6px 20px rgba(0,0,0,.18);
+}
+.searchrow input::placeholder,.textin::placeholder{color:var(--dim2)}
+.pager{border-radius:999px}
+.pager .pnum,.pct,.meta-line,.tag,.rsum,.empty{color:var(--dim)}
+
+/* 列表：细线分隔，链接做成玻璃小胶囊 */
+.song{border-top:1px solid var(--line-soft)}
+.song .t{font-family:var(--display); font-weight:530; letter-spacing:-.012em}
+.song .a,.song .d{color:var(--dim)}
+.links a{
+  display:inline-block; padding:7px 13px; border-radius:999px; font-size:12.5px;
+  color:var(--dim); text-decoration:none;
+  background:var(--glass-bg); border:1px solid var(--glass-brd);
+  box-shadow:var(--glass-hi);
+  backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+  transition:transform .16s ease,color .2s ease;
+}
+.links a:hover{color:var(--fg); transform:translateY(-1px)}
+.pickb{color:var(--fg); border-color:var(--line); background:rgba(127,127,127,.12); border-radius:6px}
+
+/* 内容卡：科普 / 周报 / 卡片舞台 */
+.kcard,.report,.preview,.saveov__box,.daily{
+  background:rgba(255,255,255,.86);
+  border:1px solid var(--glass-brd);
+  box-shadow:0 1px 2px rgba(0,0,0,.04), 0 16px 40px rgba(0,0,0,.06);
+  backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+  border-radius:var(--r);
+}
+.report{border-top:1px solid var(--glass-brd)}
+.day .bar{background:var(--fg)!important; border-radius:3px}
+
+/* 深浅色 */
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#000; --bg-soft:#0b0b0c; --card:#141416; --card2:#1a1a1c;
+    --fg:#f5f5f7; --dim:#a1a1a6; --dim2:#86868b;
+    --line:rgba(255,255,255,.14); --line-soft:rgba(255,255,255,.08);
+    --a:#f5f5f7; --b:#f5f5f7;
+    --glass-bg:rgba(28,28,30,.58);
+    --glass-brd:rgba(255,255,255,.14);
+    --glass-hi:inset 0 1px 0 rgba(255,255,255,.14), inset 0 -1px 0 rgba(0,0,0,.4);
+    --glass-shadow:0 1px 2px rgba(0,0,0,.5), 0 16px 40px rgba(0,0,0,.55);
+  }
+  body{background:#000}
+  body::before{
+    background-image:
+      radial-gradient(34% 38% at 16% 8%,  rgba(255,255,255,.18), transparent 68%),
+      radial-gradient(28% 32% at 88% 4%,  rgba(255,255,255,.12), transparent 68%),
+      radial-gradient(42% 42% at 76% 88%, rgba(255,255,255,.11), transparent 68%),
+      radial-gradient(24% 24% at 24% 78%, rgba(255,255,255,.08), transparent 68%);
+  }
+  .top{background:rgba(10,10,11,.72)}
+  .chip.on,.mood.on,.primary,.home-cta,.switch.on{background:#f5f5f7; color:#000}
+  .kcard,.report,.preview,.saveov__box,.daily{background:rgba(28,28,30,.66)}
+}
+
+/* 修：链接排成一行；情绪 emoji 去色；行距收紧 */
+.song .links{display:flex; flex-direction:row; align-items:center; gap:6px; flex-wrap:nowrap}
+.song .links a{white-space:nowrap}
+.mood i{filter:grayscale(1); opacity:.85}
+.mood .ei svg,.mood svg{filter:grayscale(1)}
+.song{padding-top:14px; padding-bottom:14px}
+.song .r1{margin-bottom:4px}
+.song .tags{margin-top:8px}
+
+/* 情绪胶囊：整颗去色，彩色 emoji / 色点都收敛成灰阶 */
+.chip,.mood,.tag,.pickb{filter:grayscale(1)}
+.mood{opacity:.96}
+
+/* 修：选中态用 --bg 反白，深浅色都不糊；翻页条收紧成一颗胶囊 */
+.mood.on,.chip.on,.primary,.home-cta,.switch.on,.mood.none.on{
+  background:var(--fg)!important; color:var(--bg)!important; border-color:transparent!important;
+}
+.mood.on i{background:var(--bg)!important; opacity:.9}
+.pager{width:fit-content; margin-inline:auto; padding:10px 14px}
+.pager .pnum input{width:44px}
+
+/* 列表分隔线：只在行与行之间，避免双线 */
+.song{border-top:0!important}
+.song + .song{border-top:1px solid var(--line-soft)}

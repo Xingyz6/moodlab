@@ -14,7 +14,7 @@ var cardState = {
   mood: 'calm',
   text: '',
   imgs: [],
-  tpl: 'gradient',
+  tpl: 'minimal',
   size: '4:5',
   color: '',            // 空 = 用心情色
   sign: '心情实验室',    // 空字符串 = 不显示水印
@@ -35,7 +35,6 @@ var cardState = {
 };
 
 var TEMPLATES = [
-  { k: 'gradient', n: '渐变' },
   { k: 'minimal',  n: '极简' },
   { k: 'magazine', n: '杂志' },
   { k: 'film',     n: '胶片' }
@@ -368,7 +367,7 @@ function buildCard() {
   var m = curMood();
   var txt = (cardState.text || '今天也过去了').trim();
   var d = dims(), W = d.W, H = d.H;
-  var fn = { gradient: tplGradient, minimal: tplMinimal, magazine: tplMagazine, film: tplFilm }[cardState.tpl] || tplGradient;
+  var fn = { minimal: tplMinimal, magazine: tplMagazine, film: tplFilm }[cardState.tpl] || tplMinimal;
   clipSeq = 0;
   return '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' +
     '<defs><clipPath id="cardbox"><rect width="' + W + '" height="' + H + '"/></clipPath></defs>' +

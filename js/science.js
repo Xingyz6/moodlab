@@ -1114,36 +1114,69 @@ function matchQ(x) {
   return (x.t + x.o + x.why + x.c + x.src).toLowerCase().indexOf(q) !== -1;
 }
 
-function renderScience(cat) {
-  var list = document.getElementById('slist');
+var SCI_PAGE = 0, SCI_PER = 12, SCI_ITEMS = [];
+var curCat = 'all';
+
+function renderScience(cat, keepPage) {
   var favs = JSON.parse(localStorage.getItem('ml-fav') || '[]');
-  var show = SCIENCE.filter(function (x) {
+  SCI_ITEMS = SCIENCE.filter(function (x) {
     if (!matchQ(x)) return false;
     if (!cat || cat === 'all') return true;
     if (cat === 'fav') return favs.indexOf(x.t) !== -1;
     return x.c === cat;
   });
-  if (!show.length) {
+  if (!keepPage) SCI_PAGE = 0;
+  paintScience();
+}
+
+// 手机上一屏塞 360 张卡会直接崩，按 12 条一页画
+function paintScience() {
+  var list = document.getElementById('slist');
+  var pager = document.getElementById('scipager');
+  var favs = JSON.parse(localStorage.getItem('ml-fav') || '[]');
+  var total = SCI_ITEMS.length;
+  if (!total) {
     list.innerHTML = '<div class="empty">没有匹配的条目</div>';
-  } else {
-    list.innerHTML = show.map(function (x) {
-      var on = favs.indexOf(x.t) !== -1;
-      return '<div class="kcard"><button class="fav' + (on ? ' on' : '') + '" data-t="' + x.t + '">' + (on ? '★' : '☆') + '</button>' +
-        '<div class="cat">' + x.c + '</div><h4>' + x.t + '</h4><div class="o">' + x.o + '</div>' +
-        '<div class="detail">' + x.why + '</div><div class="src">' + x.src + '</div></div>';
-    }).join('');
+    if (pager) pager.hidden = true;
+    return;
   }
+  var pages = Math.max(1, Math.ceil(total / SCI_PER));
+  if (SCI_PAGE > pages - 1) SCI_PAGE = pages - 1;
+  if (SCI_PAGE < 0) SCI_PAGE = 0;
+  var start = SCI_PAGE * SCI_PER;
+  list.innerHTML = SCI_ITEMS.slice(start, start + SCI_PER).map(function (x) {
+    var on = favs.indexOf(x.t) !== -1;
+    return '<div class="kcard"><button class="fav' + (on ? ' on' : '') + '" data-t="' + x.t + '">' + (on ? '★' : '☆') + '</button>' +
+      '<div class="cat">' + x.c + '</div><h4>' + x.t + '</h4><div class="o">' + x.o + '</div>' +
+      '<div class="detail">' + x.why + '</div><div class="src">' + x.src + '</div></div>';
+  }).join('');
   list.querySelectorAll('.fav').forEach(function (b) {
     b.onclick = function () {
       var cur = JSON.parse(localStorage.getItem('ml-fav') || '[]');
       var i = cur.indexOf(b.dataset.t);
       if (i === -1) cur.push(b.dataset.t); else cur.splice(i, 1);
       localStorage.setItem('ml-fav', JSON.stringify(cur));
-      renderScience(curCat);
+      renderScience(curCat, true);
     };
   });
-  var meta = document.getElementById('smeta');
-  if (meta) meta.textContent = '共 ' + show.length + ' 条';
+  if (pager) {
+    pager.hidden = pages <= 1;
+    document.getElementById('sprev').disabled = SCI_PAGE === 0;
+    document.getElementById('snext').disabled = SCI_PAGE >= pages - 1;
+    document.getElementById('spageIn').value = SCI_PAGE + 1;
+    document.getElementById('spageTot').textContent = pages;
+  }
+}
+
+function gotoSciPage(n) {
+  var pages = Math.max(1, Math.ceil(SCI_ITEMS.length / SCI_PER));
+  n = parseInt(n, 10);
+  if (!n || n < 1) n = 1;
+  if (n > pages) n = pages;
+  SCI_PAGE = n - 1;
+  paintScience();
+  var top = document.getElementById('slist');
+  if (top) window.scrollTo({ top: top.getBoundingClientRect().top + window.scrollY - 90, behavior: 'smooth' });
 }
 
 function initScience() {
@@ -1177,6 +1210,16 @@ function initScience() {
   document.getElementById('daily').innerHTML =
     '<div class="k">今日一条 · ' + d.c + '</div><h2>' + d.t + '</h2><p class="one">' + d.o + '</p>' +
     '<div class="src" style="font-size:11.5px;color:#586274;margin-top:12px">' + d.src + '</div>';
+
+  // 翻页
+  var prev = document.getElementById('sprev'), next = document.getElementById('snext'),
+      jump = document.getElementById('sjump'), pin = document.getElementById('spageIn');
+  if (prev) prev.onclick = function () { gotoSciPage(SCI_PAGE); };        // SCI_PAGE 是 0 基，正好等于上一页的页码
+  if (next) next.onclick = function () { gotoSciPage(SCI_PAGE + 2); };
+  if (jump) jump.onclick = function () { gotoSciPage(pin.value); };
+  if (pin) pin.onkeydown = function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); gotoSciPage(pin.value); pin.blur(); }
+  };
 
   renderScience('all');
 }

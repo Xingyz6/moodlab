@@ -791,3 +791,20 @@ html.dark .daily{background:rgba(28,28,30,.66)}
   .kcard{padding:20px 20px 18px}
   .daily{padding:22px 20px; border-radius:18px}
 }
+
+/* 手机：品牌与主题开关同一行，导航另起一行 */
+@media (max-width:720px){
+  .top{display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:12px 18px 10px}
+  .brand{order:1; flex:1 1 auto}
+  .theme-toggle{order:2; margin-left:auto; width:34px; height:34px}
+  .tabs{order:3; flex:1 1 100%; justify-content:flex-start; flex-wrap:wrap; gap:14px; margin-top:4px}
+  .tabs button{padding:4px 0; font-size:13.5px}
+}
+
+/* 今日一条：标题跟全站同一套无衬线，手机端收紧 */
+.daily h2{font-family:var(--display); font-weight:620; letter-spacing:-.025em; font-size:24px}
+@media (max-width:640px){
+  .daily{padding:20px 20px 18px}
+  .daily h2{font-size:20px; margin-bottom:10px}
+  .daily .one{font-size:14px; line-height:1.8}
+}

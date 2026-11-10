@@ -2,9 +2,13 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
+<script>
+  // 默认浅色；用户点过开关就记住
+  try { if (localStorage.getItem('ml-theme') === 'dark') document.documentElement.className = 'dark'; } catch (e) {}
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>心情实验室 · MoodLab</title>
-<link rel="stylesheet" href="css/style.css?v=202611102003">
+<link rel="stylesheet" href="css/style.css?v=202611102010">
 </head>
 <body>
 <header class="top">
@@ -15,6 +19,9 @@
     <button data-tab="radio">情绪电台</button>
     <button data-tab="science">随心科普</button>
   </nav>
+  <button id="themeToggle" class="theme-toggle" aria-label="切换深色 / 浅色" title="切换深色 / 浅色">
+    <span class="tk"></span>
+  </button>
 </header>
 
 <main>
@@ -274,14 +281,14 @@
   MoodLab · 纯前端，数据只在你自己的浏览器里
 </footer>
 
-<script src="js/bm25.js?v=202611102003"></script>
-<script src="js/music.js?v=202611102003"></script>
-<script src="js/moods.js?v=202611102003"></script>
-<script src="js/card.js?v=202611102003"></script>
-<script src="js/radio.js?v=202611102003"></script>
-<script src="js/science.js?v=202611102003"></script>
-<script src="js/plate.js?v=202611102003"></script>
-<script src="js/main.js?v=202611102003"></script>
+<script src="js/bm25.js?v=202611102010"></script>
+<script src="js/music.js?v=202611102010"></script>
+<script src="js/moods.js?v=202611102010"></script>
+<script src="js/card.js?v=202611102010"></script>
+<script src="js/radio.js?v=202611102010"></script>
+<script src="js/science.js?v=202611102010"></script>
+<script src="js/plate.js?v=202611102010"></script>
+<script src="js/main.js?v=202611102010"></script>
 
 </body>
 </html>

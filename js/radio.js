@@ -207,14 +207,14 @@ function renderReport() {
     var k = byDate[d];
     var m = k ? moodBy(k) : null;
     var dd = d.slice(5).replace('-', '/');
-    return '<div class="day ' + (k ? '' : 'd0') + '"><span class="em">' + (m ? m.e : '') + '</span>' +
+    return '<div class="day ' + (k ? '' : 'd0') + '"><span class="em"></span>' +
       '<div class="bar" style="height:' + (k ? 76 : 5) + 'px;' + (m ? 'background:linear-gradient(180deg,' + m.c + ',' + m.c2 + ')' : '') + '"></div>' +
       '<span class="dl">' + dd + '</span></div>';
   }).join('');
 
   body.innerHTML = '<div class="week">' + bars + '</div><p class="rsum">' +
     (counted.length
-      ? '这一周记了 <b>' + counted.length + '</b> 天，出现最多的是 <b>' + (top ? moodBy(top).e + ' ' + moodBy(top).n : '—') + '</b>'
+      ? '这一周记了 <b>' + counted.length + '</b> 天，出现最多的是 <b>' + (top ? moodBy(top).n : '—') + '</b>'
       : '还没有记录，选一个心情就会记下今天') +
     '</p>';
 }

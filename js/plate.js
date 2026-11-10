@@ -8,9 +8,8 @@ var Plate = (function () {
       return v || fallback;
     } catch (e) { return fallback; }
   }
-  var INK = cssVar('--fg', '#1d1d1f'),
-      RED = INK,
-      BLUE = INK;
+  // 注意：每次画都现读，切换深浅色时重画才会变色
+  function inkNow() { return cssVar('--fg', '#1d1d1f'); }
 
   function rng(seed) {
     var h = 2166136261 >>> 0;
@@ -31,7 +30,7 @@ var Plate = (function () {
   }
 
   function marks(W, H) {
-    var o = 10, m = 16, s = '', pad = 6;
+    var INK = inkNow(), o = 10, m = 16, s = '', pad = 6;
     [[o, o, 1, 1], [W - o, o, -1, 1], [o, H - o, 1, -1], [W - o, H - o, -1, -1]].forEach(function (p) {
       s += '<path d="M' + p[0] + ' ' + (p[1] + p[3] * m) + ' L' + p[0] + ' ' + p[1] + ' L' + (p[0] + p[2] * m) + ' ' + p[1] + '"/>';
     });
@@ -42,6 +41,7 @@ var Plate = (function () {
 
   // 圆盘网点：越靠外越小、颜色从墨蓝过渡到朱红
   function disc(seed, W, H, opt) {
+    var INK = inkNow();
     opt = opt || {};
     var R = rng(seed), cx = W * (opt.cx === undefined ? 0.5 : opt.cx), cy = H * (opt.cy === undefined ? 0.5 : opt.cy), maxR = Math.min(W, H) * 0.44, dots = '', r, i, n, a;
     for (r = 8; r < maxR; r += 8) {

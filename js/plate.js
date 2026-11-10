@@ -1,7 +1,16 @@
 // 代码生成的“印刷图版”：网点、声纹、套准标记全部由种子算出来。
 // 同一句话 / 同一天永远画出同一张，不依赖任何图片资源。
 var Plate = (function () {
-  var INK = '#21201C', RED = '#E4572E', BLUE = '#355E8C';
+  // 颜色跟随主题（黑白版：墨黑=前景色，两档用同一色不同透明度区分）
+  function cssVar(name, fallback) {
+    try {
+      var v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+      return v || fallback;
+    } catch (e) { return fallback; }
+  }
+  var INK = cssVar('--fg', '#1d1d1f'),
+      RED = INK,
+      BLUE = INK;
 
   function rng(seed) {
     var h = 2166136261 >>> 0;
@@ -43,8 +52,8 @@ var Plate = (function () {
         var rad = (2.1 + 2.4 * wob * (1 - r / maxR)) * Math.pow(R(), 0.45);
         if (rad < 0.5) continue;
         dots += '<circle cx="' + (cx + Math.cos(a) * r).toFixed(1) + '" cy="' + (cy + Math.sin(a) * r).toFixed(1) +
-          '" r="' + rad.toFixed(2) + '" fill="' + (r > maxR * 0.66 ? RED : BLUE) +
-          '" opacity="' + (0.7 + 0.3 * (1 - r / maxR)).toFixed(2) + '"/>';
+          '" r="' + rad.toFixed(2) + '" fill="' + INK +
+          '" opacity="' + ((r > maxR * 0.66 ? 0.38 : 0.9) * (0.75 + 0.25 * (1 - r / maxR))).toFixed(2) + '"/>';
       }
     }
     var clipId = 'd' + Math.floor(cx) + Math.floor(maxR);

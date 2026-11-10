@@ -1,6 +1,19 @@
 // 框架：首页 + 三个独立工具（心情不贯通，各管一摊）
 var TABS = ['home', 'card', 'radio', 'science'];
 
+// 深浅色：默认浅色，点一下切深色，记在本地
+function applyTheme(dark) {
+  document.documentElement.classList.toggle('dark', dark);
+  try { localStorage.setItem('ml-theme', dark ? 'dark' : 'light'); } catch (e) {}
+  if (typeof Plate !== 'undefined') drawHomePlate();   // 图版颜色跟着主题走
+}
+document.addEventListener('DOMContentLoaded', function () {
+  var btn = document.getElementById('themeToggle');
+  if (btn) btn.onclick = function () {
+    applyTheme(!document.documentElement.classList.contains('dark'));
+  };
+});
+
 function showTab(name) {
   if (TABS.indexOf(name) === -1) name = 'home';
   document.querySelectorAll('#tabs button').forEach(function (b) {
@@ -23,8 +36,8 @@ document.querySelectorAll('[data-go]').forEach(function (el) {
 });
 document.getElementById('homeLink').onclick = function (e) { e.preventDefault(); showTab('home'); };
 
-// 首页图版：同一天画出同一张
-(function () {
+// 首页图版：同一天画出同一张（换主题时重画，颜色跟着走）
+function drawHomePlate() {
   var el = document.getElementById('heroPlate');
   if (!el) return;
   try {
@@ -35,7 +48,8 @@ document.getElementById('homeLink').onclick = function (e) { e.preventDefault();
   } catch (e) {
     el.textContent = '图版出错：' + e.message;   // 出错就写在页面上，别静默
   }
-})();
+}
+drawHomePlate();
 
 // 首页的三个入口：用箭头切换，主按钮的动词跟着变
 (function () {

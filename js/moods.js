@@ -1,13 +1,13 @@
 // ===== 心情词表（三处共用） =====
 var MOODS = [
-  { k: 'happy', n: '开心', e: '😄', c: '#ffb347', c2: '#ff7a59' },
-  { k: 'calm',  n: '平静', e: '😌', c: '#5eead4', c2: '#38bdf8' },
-  { k: 'blue',  n: '忧郁', e: '🌧', c: '#818cf8', c2: '#6366f1' },
-  { k: 'anx',   n: '焦虑', e: '😖', c: '#f472b6', c2: '#e11d48' },
-  { k: 'tired', n: '疲惫', e: '😮‍💨', c: '#94a3b8', c2: '#64748b' },
-  { k: 'angry', n: '愤怒', e: '🔥', c: '#ef4444', c2: '#b91c1c' },
-  { k: 'miss',  n: '想念', e: '🍂', c: '#f59e0b', c2: '#d97706' },
-  { k: 'up',    n: '兴奋', e: '⚡', c: '#a3e635', c2: '#65a30d' }
+  { k: 'happy', n: '开心', e: '', c: '#ffb347', c2: '#ff7a59' },
+  { k: 'calm',  n: '平静', e: '', c: '#5eead4', c2: '#38bdf8' },
+  { k: 'blue',  n: '忧郁', e: '', c: '#818cf8', c2: '#6366f1' },
+  { k: 'anx',   n: '焦虑', e: '', c: '#f472b6', c2: '#e11d48' },
+  { k: 'tired', n: '疲惫', e: '', c: '#94a3b8', c2: '#64748b' },
+  { k: 'angry', n: '愤怒', e: '', c: '#ef4444', c2: '#b91c1c' },
+  { k: 'miss',  n: '想念', e: '', c: '#f59e0b', c2: '#d97706' },
+  { k: 'up',    n: '兴奋', e: '', c: '#a3e635', c2: '#65a30d' }
 ];
 function moodBy(k) { return MOODS.filter(function (m) { return m.k === k; })[0]; }
 
@@ -47,7 +47,7 @@ function renderMoodChipsMulti(el, selected, onToggle, withNone) {
   }
   if (withNone) chip('none', '不限', selected.length === 0, null);
   MOODS.forEach(function (m) {
-    chip(m.k, m.e + ' ' + m.n, selected.indexOf(m.k) !== -1, m.c);
+    chip(m.k, m.n, selected.indexOf(m.k) !== -1, m.c);
   });
 }
 
@@ -70,7 +70,7 @@ function renderMoodChips(el, cur, onPick, withNone) {
     b.className = 'mood' + (m.k === cur ? ' on' : '');
     b.style.setProperty('--mc', m.c);
     b.style.setProperty('--mci', inkFor(m.c));
-    b.innerHTML = '<i></i>' + m.e + ' ' + m.n;
+    b.innerHTML = '<i></i>' + m.n;
     b.onclick = function () {
       el.querySelectorAll('.mood').forEach(function (x) { x.classList.remove('on'); });
       b.classList.add('on');

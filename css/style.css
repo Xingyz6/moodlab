@@ -764,3 +764,30 @@ html.dark .theme-toggle .tk{transform:rotate(180deg)}
   .song .main{grid-column:2; grid-row:1}
   .song .links{grid-column:2; grid-row:2; justify-content:flex-start; margin-top:10px; padding-left:0}
 }
+
+/* 科普页：卡片内部留白加大，别贴着边框 */
+.cards{gap:16px; margin-top:22px}
+.kcard{
+  padding:24px 26px 22px;
+  border-radius:20px;
+  background:rgba(255,255,255,.86);
+}
+html.dark .kcard{background:rgba(28,28,30,.66)}
+.kcard:hover{border-color:var(--line-soft); transform:translateY(-2px)}
+.kcard .cat{font-size:11px; letter-spacing:.08em; color:var(--dim); margin-bottom:2px; display:block; padding-right:26px}
+.kcard h4{font-size:15.5px; margin:10px 0 9px; font-weight:590; letter-spacing:-.01em; line-height:1.45; padding-right:18px}
+.kcard .o{font-size:13.5px; color:var(--fg); opacity:.86; line-height:1.8}
+.kcard .detail{font-size:12.8px; color:var(--dim); line-height:1.85; margin-top:15px; padding-top:13px;
+  border-top:1px solid var(--line-soft)}
+.kcard .src{font-size:11.5px; color:var(--dim2); margin-top:11px; letter-spacing:.01em}
+.kcard .fav{top:16px; right:16px}
+.daily{padding:34px 40px; border-radius:22px; border-color:var(--glass-brd);
+  background:rgba(255,255,255,.86)}
+html.dark .daily{background:rgba(28,28,30,.66)}
+.daily .k{margin-bottom:12px; color:var(--dim); letter-spacing:.14em}
+.daily h2{font-size:23px; margin:0 0 12px; letter-spacing:-.02em; font-weight:600}
+.daily .one{font-size:15px; line-height:1.85; color:var(--fg); opacity:.86}
+@media (max-width:640px){
+  .kcard{padding:20px 20px 18px}
+  .daily{padding:22px 20px; border-radius:18px}
+}

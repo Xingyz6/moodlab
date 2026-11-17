@@ -44,7 +44,7 @@ function drawHomePlate() {
     if (typeof Plate === 'undefined') throw new Error('Plate 未定义（plate.js 没加载）');
     var d = new Date();
     var seed = 'MoodLab-' + d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-    el.innerHTML = Plate.disc(seed, 720, 900, { cx: 0.66, cy: 0.5 });
+    el.innerHTML = Plate.disc(seed, 720, 720, { cx: 0.5, cy: 0.5 });
   } catch (e) {
     el.textContent = '图版出错：' + e.message;   // 出错就写在页面上，别静默
   }
@@ -70,7 +70,6 @@ drawHomePlate();
     go.dataset.go = t.k;
     go.innerHTML = t.verb + ' <span>ENTER</span>';
     lab.textContent = t.label;
-    document.querySelector('.home-lead').textContent = t.lead;
   }
   document.getElementById('swPrev').onclick = function () { i = (i + TOOLS.length - 1) % TOOLS.length; paint(); };
   document.getElementById('swNext').onclick = function () { i = (i + 1) % TOOLS.length; paint(); };

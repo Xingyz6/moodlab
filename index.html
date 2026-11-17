@@ -8,16 +8,31 @@
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>心情实验室 · MoodLab</title>
-<link rel="stylesheet" href="css/style.css?v=202611102030">
+<link rel="stylesheet" href="css/style.css?v=202611172145b">
 </head>
 <body>
+<div class="sheet-marks" aria-hidden="true">
+  <span class="cm cm-tl"></span>
+  <span class="cm cm-tr"></span>
+  <span class="cm cm-bl"></span>
+  <span class="cm cm-br"></span>
+</div>
+<div class="geo" aria-hidden="true">
+  <span class="geo-disc"></span>
+  <span class="geo-ring"></span>
+  <span class="geo-ring geo-ring-2"></span>
+  <span class="geo-plus geo-plus-a"></span>
+  <span class="geo-plus geo-plus-b"></span>
+  <span class="geo-arc"></span>
+</div>
+<p class="home-spine" aria-hidden="true">MOOD LAB · 心情实验室</p>
 <header class="top">
-  <a class="brand" href="#home" id="homeLink"><h1>心情实验室</h1></a>
+  <a class="brand" href="#home" id="homeLink"><span class="regmark" aria-hidden="true"></span><h1>心情实验室</h1></a>
   <nav class="tabs" id="tabs">
-    <button data-tab="home">首页</button>
-    <button data-tab="card">情绪卡片</button>
-    <button data-tab="radio">情绪电台</button>
-    <button data-tab="science">随心科普</button>
+    <button data-tab="home"><i>01</i>首页</button>
+    <button data-tab="card"><i>02</i>情绪卡片</button>
+    <button data-tab="radio"><i>03</i>情绪电台</button>
+    <button data-tab="science"><i>04</i>随心科普</button>
   </nav>
   <button id="themeToggle" class="theme-toggle" aria-label="切换深色 / 浅色" title="切换深色 / 浅色">
     <span class="tk"></span>
@@ -28,24 +43,51 @@
   <!-- ============ 首页 ============ -->
   <section class="panel show" id="panel-home">
     <div class="home">
+      <p class="home-index">实验 001 · 今日</p>
       <div class="home-copy">
         <h2 class="home-h1">这会儿，<br>干些<em>什么</em>呢？</h2>
-        <p class="home-lead">整理一下生活</p>
-        <div class="home-actions">
-          <button class="home-cta" id="homeGo" data-go="card">写一张卡片 <span>ENTER</span></button>
-          <div class="home-switch">
-            <button class="sw" id="swPrev" aria-label="上一个工具">‹</button>
-            <span class="sw-label" id="swLabel">情绪卡片</span>
-            <button class="sw" id="swNext" aria-label="下一个工具">›</button>
-          </div>
+        <p class="home-lead">三件互不相干的小事，随便挑一件。</p>
+      </div>
+      <div class="home-plate-wrap">
+        <div class="home-plate" id="heroPlate" aria-hidden="true"></div>
+      </div>
+      <div class="home-entries">
+        <button type="button" class="entry" data-go="card">
+          <span class="en">01</span>
+          <span class="et">情绪卡片</span>
+          <span class="ed">把此刻印成一张能带走的海报</span>
+        </button>
+        <button type="button" class="entry" data-go="radio">
+          <span class="en">02</span>
+          <span class="et">情绪电台</span>
+          <span class="ed">按心情找歌，去你常用的平台听</span>
+        </button>
+        <button type="button" class="entry" data-go="science">
+          <span class="en">03</span>
+          <span class="et">随心科普</span>
+          <span class="ed">每天一条冷知识，其余慢慢翻</span>
+        </button>
+      </div>
+      <div class="home-legacy" hidden>
+        <button class="home-cta" id="homeGo" data-go="card">写一张卡片 <span>ENTER</span></button>
+        <div class="home-switch">
+          <button class="sw" id="swPrev" aria-label="上一个工具">‹</button>
+          <span class="sw-label" id="swLabel">情绪卡片</span>
+          <button class="sw" id="swNext" aria-label="下一个工具">›</button>
         </div>
       </div>
-      <div class="home-plate" id="heroPlate" aria-hidden="true"></div>
     </div>
   </section>
 
   <!-- ============ 工具一：情绪卡片 ============ -->
   <section class="panel" id="panel-card">
+    <header class="mast">
+      <span class="mast-no">02</span>
+      <div>
+        <h2>情绪卡片</h2>
+        <p>选一种心情，写下今天，生成一张海报。</p>
+      </div>
+    </header>
     <div class="split">
       <div class="controls">
         <div class="field">
@@ -240,6 +282,13 @@
 
   <!-- ============ 工具二：情绪电台 ============ -->
   <section class="panel" id="panel-radio">
+    <header class="mast">
+      <span class="mast-no">03</span>
+      <div>
+        <h2>情绪电台</h2>
+        <p>按心情和地域挑歌，在网易云、QQ 或 Apple Music 打开。</p>
+      </div>
+    </header>
     <div class="radio-head">
       <div class="moods" id="radio-moods"></div>
       <div class="chips" id="radio-regions"></div>
@@ -268,6 +317,13 @@
 
   <!-- ============ 工具三：随心科普 ============ -->
   <section class="panel" id="panel-science">
+    <header class="mast">
+      <span class="mast-no">04</span>
+      <div>
+        <h2>随心科普</h2>
+        <p>每天一条，其余按分类慢慢翻。</p>
+      </div>
+    </header>
     <div class="daily" id="daily"></div>
     <div class="science-bar">
       <input id="sciq" class="textin" placeholder="搜关键词" autocomplete="off">
@@ -287,14 +343,14 @@
   MoodLab · 纯前端，数据只在你自己的浏览器里
 </footer>
 
-<script src="js/bm25.js?v=202611102030"></script>
-<script src="js/music.js?v=202611102030"></script>
-<script src="js/moods.js?v=202611102030"></script>
-<script src="js/card.js?v=202611102030"></script>
-<script src="js/radio.js?v=202611102030"></script>
-<script src="js/science.js?v=202611102030"></script>
-<script src="js/plate.js?v=202611102030"></script>
-<script src="js/main.js?v=202611102030"></script>
+<script src="js/bm25.js?v=202611172145b"></script>
+<script src="js/music.js?v=202611172145b"></script>
+<script src="js/moods.js?v=202611172145b"></script>
+<script src="js/card.js?v=202611172145b"></script>
+<script src="js/radio.js?v=202611172145b"></script>
+<script src="js/science.js?v=202611172145b"></script>
+<script src="js/plate.js?v=202611172145b"></script>
+<script src="js/main.js?v=202611172145b"></script>
 
 </body>
 </html>
